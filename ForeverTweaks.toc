@@ -1,0 +1,7 @@
+## Interface: 11600
+## Title: ForeverTweaks
+## Notes: Basic addon
+## Author: Borcsa
+## Version: 1.0.0
+
+ForeverTweaks.lua
