@@ -3,7 +3,10 @@ ForeverTweaks.modules.Bags = Bags
 
 function Bags:Initialize()
     ForeverTweaksDB.Bags = ForeverTweaksDB.Bags or {}
-    self:MakeCombinedBagMoveable()
+
+    if ForeverTweaks.modules.Config:GetSetting("moveableCombinedBag") then
+        self:MakeCombinedBagMoveable()
+    end
 end
 
 function Bags:OnLogout()

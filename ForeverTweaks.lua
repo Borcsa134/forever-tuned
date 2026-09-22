@@ -11,9 +11,14 @@ frame:RegisterEvent("PLAYER_LOGOUT")
 frame:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1 == addonName then
         ForeverTweaksDB = ForeverTweaksDB or {}
+        ForeverTweaksDB.settings = ForeverTweaksDB.settings or {}
+
+        if ForeverTweaks.modules.Config then
+            ForeverTweaks.modules.Config:Initialize()
+        end
 
         for name, module in pairs(ForeverTweaks.modules) do
-            if module.Initialize then
+            if module.Initialize and name ~= "Config" then
                 module:Initialize()
             end
         end

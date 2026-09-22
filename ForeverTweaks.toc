@@ -6,4 +6,5 @@
 ## SavedVariables: ForeverTweaksDB
 
 ForeverTweaks.lua
+modules/config.lua
 modules/bags.lua
