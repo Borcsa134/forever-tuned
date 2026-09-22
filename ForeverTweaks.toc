@@ -3,5 +3,7 @@
 ## Notes: Basic addon
 ## Author: Borcsa
 ## Version: 1.0.0
+## SavedVariables: ForeverTweaksDB
 
 ForeverTweaks.lua
+modules/bags.lua
