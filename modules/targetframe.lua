@@ -1,5 +1,5 @@
 local TargetFrameModule = {}
-ForeverTweaks.modules.TargetFrame = TargetFrameModule
+ForeverTuned.modules.TargetFrame = TargetFrameModule
 
 local classIcon
 local iconFrame
@@ -40,7 +40,7 @@ function TargetFrameModule:RegisterEvents()
 end
 
 function TargetFrameModule:UpdateClassIcon()
-    if not ForeverTweaksDB.settings.showTargetClassIcon then
+    if not ForeverTunedDB.settings.showTargetClassIcon then
         iconFrame:Hide()
         return
     end

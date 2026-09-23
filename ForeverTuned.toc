@@ -1,0 +1,11 @@
+## Interface: 11600
+## Title: Forever Tuned
+## Notes: UI tweaks and enhancements for WoW Forever
+## Author: Boris Makes Stuff
+## Version: 1.0.0
+## SavedVariables: ForeverTunedDB
+
+ForeverTuned.lua
+modules/config.lua
+modules/bags.lua
+modules/targetframe.lua

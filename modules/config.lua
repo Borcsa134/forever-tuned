@@ -1,5 +1,5 @@
 local Config = {}
-ForeverTweaks.modules.Config = Config
+ForeverTuned.modules.Config = Config
 
 local configFrame
 local minimapButton
@@ -14,24 +14,24 @@ function Config:Initialize()
 end
 
 function Config:SetDefaults()
-    if ForeverTweaksDB.settings.moveableCombinedBag == nil then
-        ForeverTweaksDB.settings.moveableCombinedBag = true
+    if ForeverTunedDB.settings.moveableCombinedBag == nil then
+        ForeverTunedDB.settings.moveableCombinedBag = true
     end
-    if ForeverTweaksDB.settings.showTargetClassIcon == nil then
-        ForeverTweaksDB.settings.showTargetClassIcon = true
+    if ForeverTunedDB.settings.showTargetClassIcon == nil then
+        ForeverTunedDB.settings.showTargetClassIcon = true
     end
 end
 
 function Config:GetSetting(key)
-    return ForeverTweaksDB.settings[key]
+    return ForeverTunedDB.settings[key]
 end
 
 function Config:SetSetting(key, value)
-    ForeverTweaksDB.settings[key] = value
+    ForeverTunedDB.settings[key] = value
 end
 
 function Config:CreateUI()
-    configFrame = CreateFrame("Frame", "ForeverTweaksConfigFrame", UIParent, "PortraitFrameTemplate")
+    configFrame = CreateFrame("Frame", "ForeverTunedConfigFrame", UIParent, "PortraitFrameTemplate")
     configFrame:SetSize(400, 300)
     configFrame:SetPoint("CENTER")
     configFrame:SetMovable(true)
@@ -49,7 +49,7 @@ function Config:CreateUI()
     configFrame.title = configFrame.TitleContainer:CreateFontString(nil, "OVERLAY")
     configFrame.title:SetFontObject("GameFontNormal")
     configFrame.title:SetPoint("TOP", 0, -6)
-    configFrame.title:SetText("ForeverTweaks Settings")
+    configFrame.title:SetText("ForeverTuned Settings")
     configFrame.title:SetTextColor(1, 0.82, 0)
 
     configFrame.CloseButton:SetScript("OnClick", function()
@@ -103,7 +103,7 @@ function Config:CreateUI()
 end
 
 function Config:CreateMoveableBagCheckbox(yOffset)
-    configFrame.moveableBagCheck = CreateFrame("CheckButton", "ForeverTweaksConfigMoveableBag", configFrame, "UICheckButtonTemplate")
+    configFrame.moveableBagCheck = CreateFrame("CheckButton", "ForeverTunedConfigMoveableBag", configFrame, "UICheckButtonTemplate")
     configFrame.moveableBagCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", 20, yOffset)
     configFrame.moveableBagCheck.text = configFrame.moveableBagCheck:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     configFrame.moveableBagCheck.text:SetPoint("LEFT", configFrame.moveableBagCheck, "RIGHT", 5, 0)
@@ -120,7 +120,7 @@ function Config:CreateMoveableBagCheckbox(yOffset)
 end
 
 function Config:CreateTargetClassIconCheckbox(yOffset)
-    configFrame.targetClassIconCheck = CreateFrame("CheckButton", "ForeverTweaksConfigTargetClassIcon", configFrame, "UICheckButtonTemplate")
+    configFrame.targetClassIconCheck = CreateFrame("CheckButton", "ForeverTunedConfigTargetClassIcon", configFrame, "UICheckButtonTemplate")
     configFrame.targetClassIconCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", 20, yOffset)
     configFrame.targetClassIconCheck.text = configFrame.targetClassIconCheck:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     configFrame.targetClassIconCheck.text:SetPoint("LEFT", configFrame.targetClassIconCheck, "RIGHT", 5, 0)
@@ -165,7 +165,7 @@ function Config:RegisterSlashCommand()
 end
 
 function Config:CreateMinimapButton()
-    minimapButton = CreateFrame("Button", "ForeverTweaksMinimapButton", Minimap)
+    minimapButton = CreateFrame("Button", "ForeverTunedMinimapButton", Minimap)
     minimapButton:SetSize(31, 31)
     minimapButton:SetFrameStrata("MEDIUM")
     minimapButton:SetFrameLevel(8)
@@ -187,7 +187,7 @@ function Config:CreateMinimapButton()
 
     minimapButton:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:AddLine("ForeverTweaks")
+        GameTooltip:AddLine("ForeverTuned")
         GameTooltip:AddLine("Click to open settings", 1, 1, 1)
         GameTooltip:Show()
     end)
@@ -196,7 +196,7 @@ function Config:CreateMinimapButton()
         GameTooltip:Hide()
     end)
 
-    ForeverTweaksDB.minimapAngle = ForeverTweaksDB.minimapAngle or 45
+    ForeverTunedDB.minimapAngle = ForeverTunedDB.minimapAngle or 45
     self:UpdateMinimapPosition()
 
     minimapButton:RegisterForDrag("LeftButton")
@@ -215,12 +215,12 @@ function Config.OnMinimapDrag()
     px, py = px / scale, py / scale
 
     local angle = math.deg(math.atan2(py - my, px - mx))
-    ForeverTweaksDB.minimapAngle = angle
+    ForeverTunedDB.minimapAngle = angle
     Config:UpdateMinimapPosition()
 end
 
 function Config:UpdateMinimapPosition()
-    local angle = math.rad(ForeverTweaksDB.minimapAngle or 45)
+    local angle = math.rad(ForeverTunedDB.minimapAngle or 45)
     local x = math.cos(angle) * 110
     local y = math.sin(angle) * 110
     minimapButton:SetPoint("CENTER", Minimap, "CENTER", x, y)

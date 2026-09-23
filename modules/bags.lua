@@ -1,10 +1,10 @@
 local Bags = {}
-ForeverTweaks.modules.Bags = Bags
+ForeverTuned.modules.Bags = Bags
 
 function Bags:Initialize()
-    ForeverTweaksDB.Bags = ForeverTweaksDB.Bags or {}
+    ForeverTunedDB.Bags = ForeverTunedDB.Bags or {}
 
-    if ForeverTweaks.modules.Config:GetSetting("moveableCombinedBag") then
+    if ForeverTuned.modules.Config:GetSetting("moveableCombinedBag") then
         self:MakeCombinedBagMoveable()
     end
 end
@@ -16,7 +16,7 @@ end
 function Bags:SavePosition()
     if ContainerFrameCombinedBags then
         local point, _, relativePoint, xOfs, yOfs = ContainerFrameCombinedBags:GetPoint()
-        ForeverTweaksDB.Bags.CombinedBagPosition = {
+        ForeverTunedDB.Bags.CombinedBagPosition = {
             point = point,
             relativePoint = relativePoint,
             xOfs = xOfs,
@@ -44,9 +44,9 @@ function Bags:MakeCombinedBagMoveable()
             end)
 
             ContainerFrameCombinedBags:HookScript("OnShow", function(self)
-                if not isRestoring and ForeverTweaksDB.Bags.CombinedBagPosition then
+                if not isRestoring and ForeverTunedDB.Bags.CombinedBagPosition then
                     isRestoring = true
-                    local pos = ForeverTweaksDB.Bags.CombinedBagPosition
+                    local pos = ForeverTunedDB.Bags.CombinedBagPosition
                     self:Hide()
 
                     local frame = CreateFrame("Frame")
@@ -63,8 +63,8 @@ function Bags:MakeCombinedBagMoveable()
                 end
             end)
 
-            if ForeverTweaksDB.Bags.CombinedBagPosition then
-                local pos = ForeverTweaksDB.Bags.CombinedBagPosition
+            if ForeverTunedDB.Bags.CombinedBagPosition then
+                local pos = ForeverTunedDB.Bags.CombinedBagPosition
                 ContainerFrameCombinedBags:ClearAllPoints()
                 ContainerFrameCombinedBags:SetPoint(pos.point, UIParent, pos.relativePoint, pos.xOfs, pos.yOfs)
             end
