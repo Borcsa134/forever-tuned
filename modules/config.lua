@@ -17,6 +17,9 @@ function Config:SetDefaults()
     if ForeverTweaksDB.settings.moveableCombinedBag == nil then
         ForeverTweaksDB.settings.moveableCombinedBag = true
     end
+    if ForeverTweaksDB.settings.showTargetClassIcon == nil then
+        ForeverTweaksDB.settings.showTargetClassIcon = true
+    end
 end
 
 function Config:GetSetting(key)
@@ -52,6 +55,7 @@ function Config:CreateUI()
     configFrame.CloseButton:SetScript("OnClick", function()
         if settingsChanged then
             Config:SetSetting("moveableCombinedBag", originalSettings.moveableCombinedBag)
+            Config:SetSetting("showTargetClassIcon", originalSettings.showTargetClassIcon)
             settingsChanged = false
         end
         configFrame:Hide()
@@ -66,6 +70,15 @@ function Config:CreateUI()
 
     yOffset = self:CreateMoveableBagCheckbox(yOffset)
 
+    yOffset = yOffset - 10
+
+    local targetHeader = configFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    targetHeader:SetPoint("TOPLEFT", configFrame, "TOPLEFT", 20, yOffset)
+    targetHeader:SetText("Target Frame")
+    yOffset = yOffset - 30
+
+    yOffset = self:CreateTargetClassIconCheckbox(yOffset)
+
     configFrame.closeButton = CreateFrame("Button", nil, configFrame, "UIPanelButtonTemplate")
     configFrame.closeButton:SetSize(80, 22)
     configFrame.closeButton:SetPoint("BOTTOMRIGHT", configFrame, "BOTTOMRIGHT", -10, 10)
@@ -73,6 +86,7 @@ function Config:CreateUI()
     configFrame.closeButton:SetScript("OnClick", function()
         if settingsChanged then
             Config:SetSetting("moveableCombinedBag", originalSettings.moveableCombinedBag)
+            Config:SetSetting("showTargetClassIcon", originalSettings.showTargetClassIcon)
             settingsChanged = false
         end
         configFrame:Hide()
@@ -105,17 +119,38 @@ function Config:CreateMoveableBagCheckbox(yOffset)
     return yOffset - 30
 end
 
+function Config:CreateTargetClassIconCheckbox(yOffset)
+    configFrame.targetClassIconCheck = CreateFrame("CheckButton", "ForeverTweaksConfigTargetClassIcon", configFrame, "UICheckButtonTemplate")
+    configFrame.targetClassIconCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", 20, yOffset)
+    configFrame.targetClassIconCheck.text = configFrame.targetClassIconCheck:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    configFrame.targetClassIconCheck.text:SetPoint("LEFT", configFrame.targetClassIconCheck, "RIGHT", 5, 0)
+    configFrame.targetClassIconCheck.text:SetText("Show Target Class Icon")
+    configFrame.targetClassIconCheck:SetChecked(self:GetSetting("showTargetClassIcon"))
+    configFrame.targetClassIconCheck:SetScript("OnClick", function(self)
+        Config:SetSetting("showTargetClassIcon", self:GetChecked())
+        settingsChanged = true
+        if configFrame.reloadButton then
+            configFrame.reloadButton:Enable()
+        end
+    end)
+    return yOffset - 30
+end
+
 function Config:ShowUI()
     if configFrame then
         settingsChanged = false
         originalSettings = {
-            moveableCombinedBag = self:GetSetting("moveableCombinedBag")
+            moveableCombinedBag = self:GetSetting("moveableCombinedBag"),
+            showTargetClassIcon = self:GetSetting("showTargetClassIcon")
         }
         if configFrame.reloadButton then
             configFrame.reloadButton:Disable()
         end
         if configFrame.moveableBagCheck then
             configFrame.moveableBagCheck:SetChecked(self:GetSetting("moveableCombinedBag"))
+        end
+        if configFrame.targetClassIconCheck then
+            configFrame.targetClassIconCheck:SetChecked(self:GetSetting("showTargetClassIcon"))
         end
         configFrame:Show()
     end

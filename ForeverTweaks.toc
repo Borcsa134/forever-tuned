@@ -8,3 +8,4 @@
 ForeverTweaks.lua
 modules/config.lua
 modules/bags.lua
+modules/targetframe.lua
