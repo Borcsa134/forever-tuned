@@ -1,5 +1,5 @@
-## Interface: 11601
-## Interface-Camelot: 11601
+## Interface: 11600
+## Interface-Camelot: 11600
 ## Title: Forever Tuned
 ## Notes: UI tweaks and enhancements for WoW Forever
 ## Author: Boris Makes Stuff
