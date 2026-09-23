@@ -1,4 +1,4 @@
-## Interface: 11601
+## Interface: 16001
 ## Title: Forever Tuned
 ## Notes: UI tweaks and enhancements for WoW Forever
 ## Author: Boris Makes Stuff
