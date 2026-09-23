@@ -1,5 +1,5 @@
 local addonName = "ForeverTuned"
-local addonVersion = "1.0.0"
+local addonVersion = "1.0.1"
 
 ForeverTuned = ForeverTuned or {}
 ForeverTuned.modules = {}
