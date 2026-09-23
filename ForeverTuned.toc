@@ -11,3 +11,4 @@ ForeverTuned.lua
 modules/config.lua
 modules/bags.lua
 modules/targetframe.lua
+modules/nameplates.lua

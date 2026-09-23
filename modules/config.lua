@@ -20,6 +20,9 @@ function Config:SetDefaults()
     if ForeverTunedDB.settings.showTargetClassIcon == nil then
         ForeverTunedDB.settings.showTargetClassIcon = true
     end
+    if ForeverTunedDB.settings.nameplateLevelOnLeft == nil then
+        ForeverTunedDB.settings.nameplateLevelOnLeft = true
+    end
 end
 
 function Config:GetSetting(key)
@@ -56,6 +59,7 @@ function Config:CreateUI()
         if settingsChanged then
             Config:SetSetting("moveableCombinedBag", originalSettings.moveableCombinedBag)
             Config:SetSetting("showTargetClassIcon", originalSettings.showTargetClassIcon)
+            Config:SetSetting("nameplateLevelOnLeft", originalSettings.nameplateLevelOnLeft)
             settingsChanged = false
         end
         configFrame:Hide()
@@ -79,6 +83,15 @@ function Config:CreateUI()
 
     yOffset = self:CreateTargetClassIconCheckbox(yOffset)
 
+    yOffset = yOffset - 10
+
+    local nameplatesHeader = configFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    nameplatesHeader:SetPoint("TOPLEFT", configFrame, "TOPLEFT", 20, yOffset)
+    nameplatesHeader:SetText("Nameplates")
+    yOffset = yOffset - 30
+
+    yOffset = self:CreateNameplateLevelCheckbox(yOffset)
+
     configFrame.closeButton = CreateFrame("Button", nil, configFrame, "UIPanelButtonTemplate")
     configFrame.closeButton:SetSize(80, 22)
     configFrame.closeButton:SetPoint("BOTTOMRIGHT", configFrame, "BOTTOMRIGHT", -10, 10)
@@ -87,6 +100,7 @@ function Config:CreateUI()
         if settingsChanged then
             Config:SetSetting("moveableCombinedBag", originalSettings.moveableCombinedBag)
             Config:SetSetting("showTargetClassIcon", originalSettings.showTargetClassIcon)
+            Config:SetSetting("nameplateLevelOnLeft", originalSettings.nameplateLevelOnLeft)
             settingsChanged = false
         end
         configFrame:Hide()
@@ -136,12 +150,30 @@ function Config:CreateTargetClassIconCheckbox(yOffset)
     return yOffset - 30
 end
 
+function Config:CreateNameplateLevelCheckbox(yOffset)
+    configFrame.nameplateLevelCheck = CreateFrame("CheckButton", "ForeverTunedConfigNameplateLevel", configFrame, "UICheckButtonTemplate")
+    configFrame.nameplateLevelCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", 20, yOffset)
+    configFrame.nameplateLevelCheck.text = configFrame.nameplateLevelCheck:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    configFrame.nameplateLevelCheck.text:SetPoint("LEFT", configFrame.nameplateLevelCheck, "RIGHT", 5, 0)
+    configFrame.nameplateLevelCheck.text:SetText("Show Level on Left Side")
+    configFrame.nameplateLevelCheck:SetChecked(self:GetSetting("nameplateLevelOnLeft"))
+    configFrame.nameplateLevelCheck:SetScript("OnClick", function(self)
+        Config:SetSetting("nameplateLevelOnLeft", self:GetChecked())
+        settingsChanged = true
+        if configFrame.reloadButton then
+            configFrame.reloadButton:Enable()
+        end
+    end)
+    return yOffset - 30
+end
+
 function Config:ShowUI()
     if configFrame then
         settingsChanged = false
         originalSettings = {
             moveableCombinedBag = self:GetSetting("moveableCombinedBag"),
-            showTargetClassIcon = self:GetSetting("showTargetClassIcon")
+            showTargetClassIcon = self:GetSetting("showTargetClassIcon"),
+            nameplateLevelOnLeft = self:GetSetting("nameplateLevelOnLeft")
         }
         if configFrame.reloadButton then
             configFrame.reloadButton:Disable()
@@ -151,6 +183,9 @@ function Config:ShowUI()
         end
         if configFrame.targetClassIconCheck then
             configFrame.targetClassIconCheck:SetChecked(self:GetSetting("showTargetClassIcon"))
+        end
+        if configFrame.nameplateLevelCheck then
+            configFrame.nameplateLevelCheck:SetChecked(self:GetSetting("nameplateLevelOnLeft"))
         end
         configFrame:Show()
     end
