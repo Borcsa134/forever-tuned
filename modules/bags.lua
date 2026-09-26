@@ -6,6 +6,7 @@ function Bags:Initialize()
 
     if ForeverTuned.modules.Config:GetSetting("moveableCombinedBag") then
         self:MakeCombinedBagMoveable()
+        self:AnchorReagentBag()
     end
 end
 
@@ -85,3 +86,63 @@ function Bags:MakeCombinedBagMoveable()
     end
 end
 
+function Bags:AnchorReagentBag()
+    ToggleAllBags = function()
+        if ContainerFrameCombinedBags and ContainerFrame6 then
+            if ContainerFrameCombinedBags:IsShown() then
+                CloseAllBags()
+            else
+                OpenAllBags()
+            end
+        end
+    end
+
+    local function setupReagentBag()
+        if ContainerFrame6 and ContainerFrameCombinedBags then
+            ContainerFrame6:ClearAllPoints()
+            ContainerFrame6:SetPoint("TOPRIGHT", ContainerFrameCombinedBags, "TOPLEFT", -5, 0)
+
+            hooksecurefunc(ContainerFrame6, "Show", function()
+                if ContainerFrameCombinedBags:IsShown() then
+                    ContainerFrame6:ClearAllPoints()
+                    ContainerFrame6:SetPoint("TOPRIGHT", ContainerFrameCombinedBags, "TOPLEFT", -5, 0)
+                else
+                    OpenAllBags()
+                end
+            end)
+
+            hooksecurefunc(ContainerFrameCombinedBags, "Show", function()
+                if not ContainerFrame6:IsShown() then
+                    OpenBag(5)
+                end
+                    ContainerFrame6:ClearAllPoints()
+                    ContainerFrame6:SetPoint("TOPRIGHT", ContainerFrameCombinedBags, "TOPLEFT", -5, 0)
+            end)
+
+            hooksecurefunc(ContainerFrameCombinedBags, "Hide", function()
+                if ContainerFrame6:IsShown() then
+                    CloseBag(5)
+                end
+            end)
+
+            hooksecurefunc(ContainerFrame6, "Hide", function()
+                if ContainerFrameCombinedBags:IsShown() then
+                    CloseAllBags()
+                end
+            end)
+
+            return true
+        end
+        return false
+    end
+
+    if not setupReagentBag() then
+        local waitFrame = CreateFrame("Frame")
+        waitFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+        waitFrame:SetScript("OnEvent", function(self, event)
+            if setupReagentBag() then
+                self:UnregisterAllEvents()
+            end
+        end)
+    end
+end
