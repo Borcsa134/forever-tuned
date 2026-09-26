@@ -26,6 +26,9 @@ function Config:SetDefaults()
     if ForeverTunedDB.settings.characterTabsAtBottom == nil then
         ForeverTunedDB.settings.characterTabsAtBottom = true
     end
+    if ForeverTunedDB.settings.disableAutoGearCompare == nil then
+        ForeverTunedDB.settings.disableAutoGearCompare = true
+    end
 end
 
 function Config:GetSetting(key)
@@ -64,6 +67,7 @@ function Config:CreateUI()
             Config:SetSetting("showTargetClassIcon", originalSettings.showTargetClassIcon)
             Config:SetSetting("nameplateLevelOnLeft", originalSettings.nameplateLevelOnLeft)
             Config:SetSetting("characterTabsAtBottom", originalSettings.characterTabsAtBottom)
+            Config:SetSetting("disableAutoGearCompare", originalSettings.disableAutoGearCompare)
             settingsChanged = false
         end
         configFrame:Hide()
@@ -105,6 +109,15 @@ function Config:CreateUI()
 
     yOffset = self:CreateCharacterTabsCheckbox(yOffset)
 
+    yOffset = yOffset - 10
+
+    local tooltipHeader = configFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    tooltipHeader:SetPoint("TOPLEFT", configFrame, "TOPLEFT", 20, yOffset)
+    tooltipHeader:SetText("Tooltips")
+    yOffset = yOffset - 30
+
+    yOffset = self:CreateDisableAutoGearCompareCheckbox(yOffset)
+
     configFrame.closeButton = CreateFrame("Button", nil, configFrame, "UIPanelButtonTemplate")
     configFrame.closeButton:SetSize(80, 22)
     configFrame.closeButton:SetPoint("BOTTOMRIGHT", configFrame, "BOTTOMRIGHT", -10, 10)
@@ -115,6 +128,7 @@ function Config:CreateUI()
             Config:SetSetting("showTargetClassIcon", originalSettings.showTargetClassIcon)
             Config:SetSetting("nameplateLevelOnLeft", originalSettings.nameplateLevelOnLeft)
             Config:SetSetting("characterTabsAtBottom", originalSettings.characterTabsAtBottom)
+            Config:SetSetting("disableAutoGearCompare", originalSettings.disableAutoGearCompare)
             settingsChanged = false
         end
         configFrame:Hide()
@@ -198,6 +212,23 @@ function Config:CreateCharacterTabsCheckbox(yOffset)
     return yOffset - 30
 end
 
+function Config:CreateDisableAutoGearCompareCheckbox(yOffset)
+    configFrame.disableAutoGearCompareCheck = CreateFrame("CheckButton", "ForeverTunedConfigDisableAutoGearCompare", configFrame, "UICheckButtonTemplate")
+    configFrame.disableAutoGearCompareCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", 20, yOffset)
+    configFrame.disableAutoGearCompareCheck.text = configFrame.disableAutoGearCompareCheck:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    configFrame.disableAutoGearCompareCheck.text:SetPoint("LEFT", configFrame.disableAutoGearCompareCheck, "RIGHT", 5, 0)
+    configFrame.disableAutoGearCompareCheck.text:SetText("Do not auto compare gear upgrades")
+    configFrame.disableAutoGearCompareCheck:SetChecked(self:GetSetting("disableAutoGearCompare"))
+    configFrame.disableAutoGearCompareCheck:SetScript("OnClick", function(self)
+        Config:SetSetting("disableAutoGearCompare", self:GetChecked())
+        settingsChanged = true
+        if configFrame.reloadButton then
+            configFrame.reloadButton:Enable()
+        end
+    end)
+    return yOffset - 30
+end
+
 function Config:ShowUI()
     if configFrame then
         settingsChanged = false
@@ -205,7 +236,8 @@ function Config:ShowUI()
             moveableCombinedBag = self:GetSetting("moveableCombinedBag"),
             showTargetClassIcon = self:GetSetting("showTargetClassIcon"),
             nameplateLevelOnLeft = self:GetSetting("nameplateLevelOnLeft"),
-            characterTabsAtBottom = self:GetSetting("characterTabsAtBottom")
+            characterTabsAtBottom = self:GetSetting("characterTabsAtBottom"),
+            disableAutoGearCompare = self:GetSetting("disableAutoGearCompare")
         }
         if configFrame.reloadButton then
             configFrame.reloadButton:Disable()
@@ -221,6 +253,9 @@ function Config:ShowUI()
         end
         if configFrame.characterTabsCheck then
             configFrame.characterTabsCheck:SetChecked(self:GetSetting("characterTabsAtBottom"))
+        end
+        if configFrame.disableAutoGearCompareCheck then
+            configFrame.disableAutoGearCompareCheck:SetChecked(self:GetSetting("disableAutoGearCompare"))
         end
         configFrame:Show()
     end
