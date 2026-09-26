@@ -23,6 +23,9 @@ function Config:SetDefaults()
     if ForeverTunedDB.settings.nameplateLevelOnLeft == nil then
         ForeverTunedDB.settings.nameplateLevelOnLeft = true
     end
+    if ForeverTunedDB.settings.characterTabsAtBottom == nil then
+        ForeverTunedDB.settings.characterTabsAtBottom = true
+    end
 end
 
 function Config:GetSetting(key)
@@ -35,7 +38,7 @@ end
 
 function Config:CreateUI()
     configFrame = CreateFrame("Frame", "ForeverTunedConfigFrame", UIParent, "PortraitFrameTemplate")
-    configFrame:SetSize(400, 300)
+    configFrame:SetSize(400, 500)
     configFrame:SetPoint("CENTER")
     configFrame:SetMovable(true)
     configFrame:EnableMouse(true)
@@ -60,6 +63,7 @@ function Config:CreateUI()
             Config:SetSetting("moveableCombinedBag", originalSettings.moveableCombinedBag)
             Config:SetSetting("showTargetClassIcon", originalSettings.showTargetClassIcon)
             Config:SetSetting("nameplateLevelOnLeft", originalSettings.nameplateLevelOnLeft)
+            Config:SetSetting("characterTabsAtBottom", originalSettings.characterTabsAtBottom)
             settingsChanged = false
         end
         configFrame:Hide()
@@ -92,6 +96,15 @@ function Config:CreateUI()
 
     yOffset = self:CreateNameplateLevelCheckbox(yOffset)
 
+    yOffset = yOffset - 10
+
+    local characterHeader = configFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    characterHeader:SetPoint("TOPLEFT", configFrame, "TOPLEFT", 20, yOffset)
+    characterHeader:SetText("Character Frame")
+    yOffset = yOffset - 30
+
+    yOffset = self:CreateCharacterTabsCheckbox(yOffset)
+
     configFrame.closeButton = CreateFrame("Button", nil, configFrame, "UIPanelButtonTemplate")
     configFrame.closeButton:SetSize(80, 22)
     configFrame.closeButton:SetPoint("BOTTOMRIGHT", configFrame, "BOTTOMRIGHT", -10, 10)
@@ -101,6 +114,7 @@ function Config:CreateUI()
             Config:SetSetting("moveableCombinedBag", originalSettings.moveableCombinedBag)
             Config:SetSetting("showTargetClassIcon", originalSettings.showTargetClassIcon)
             Config:SetSetting("nameplateLevelOnLeft", originalSettings.nameplateLevelOnLeft)
+            Config:SetSetting("characterTabsAtBottom", originalSettings.characterTabsAtBottom)
             settingsChanged = false
         end
         configFrame:Hide()
@@ -167,13 +181,31 @@ function Config:CreateNameplateLevelCheckbox(yOffset)
     return yOffset - 30
 end
 
+function Config:CreateCharacterTabsCheckbox(yOffset)
+    configFrame.characterTabsCheck = CreateFrame("CheckButton", "ForeverTunedConfigCharacterTabs", configFrame, "UICheckButtonTemplate")
+    configFrame.characterTabsCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", 20, yOffset)
+    configFrame.characterTabsCheck.text = configFrame.characterTabsCheck:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    configFrame.characterTabsCheck.text:SetPoint("LEFT", configFrame.characterTabsCheck, "RIGHT", 5, 0)
+    configFrame.characterTabsCheck.text:SetText("Tabs at Bottom")
+    configFrame.characterTabsCheck:SetChecked(self:GetSetting("characterTabsAtBottom"))
+    configFrame.characterTabsCheck:SetScript("OnClick", function(self)
+        Config:SetSetting("characterTabsAtBottom", self:GetChecked())
+        settingsChanged = true
+        if configFrame.reloadButton then
+            configFrame.reloadButton:Enable()
+        end
+    end)
+    return yOffset - 30
+end
+
 function Config:ShowUI()
     if configFrame then
         settingsChanged = false
         originalSettings = {
             moveableCombinedBag = self:GetSetting("moveableCombinedBag"),
             showTargetClassIcon = self:GetSetting("showTargetClassIcon"),
-            nameplateLevelOnLeft = self:GetSetting("nameplateLevelOnLeft")
+            nameplateLevelOnLeft = self:GetSetting("nameplateLevelOnLeft"),
+            characterTabsAtBottom = self:GetSetting("characterTabsAtBottom")
         }
         if configFrame.reloadButton then
             configFrame.reloadButton:Disable()
@@ -186,6 +218,9 @@ function Config:ShowUI()
         end
         if configFrame.nameplateLevelCheck then
             configFrame.nameplateLevelCheck:SetChecked(self:GetSetting("nameplateLevelOnLeft"))
+        end
+        if configFrame.characterTabsCheck then
+            configFrame.characterTabsCheck:SetChecked(self:GetSetting("characterTabsAtBottom"))
         end
         configFrame:Show()
     end

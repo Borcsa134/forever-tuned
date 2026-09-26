@@ -12,3 +12,4 @@ modules/config.lua
 modules/bags.lua
 modules/targetframe.lua
 modules/nameplates.lua
+modules/characterframe.lua
