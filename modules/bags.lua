@@ -7,6 +7,7 @@ function Bags:Initialize()
     if ForeverTuned.modules.Config:GetSetting("moveableCombinedBag") then
         self:MakeCombinedBagMoveable()
         self:AnchorReagentBag()
+        self:OverrideBagKeybind()
     end
 end
 
@@ -123,4 +124,28 @@ function Bags:AnchorReagentBag()
             end
         end)
     end
+end
+
+function Bags:OverrideBagKeybind()
+    local function applyBinding()
+        if InCombatLockdown() then return false end
+
+        local key1, key2 = GetBindingKey("TOGGLEBACKPACK")
+        if not key1 and not key2 then return true end
+
+        if key1 then SetBinding(key1, "OPENALLBAGS") end
+        if key2 then SetBinding(key2, "OPENALLBAGS") end
+
+        SaveBindings(GetCurrentBindingSet())
+        return true
+    end
+
+    local waitFrame = CreateFrame("Frame")
+    waitFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+    waitFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+    waitFrame:SetScript("OnEvent", function(self, event)
+        if applyBinding() then
+            self:UnregisterAllEvents()
+        end
+    end)
 end
