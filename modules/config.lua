@@ -32,6 +32,9 @@ function Config:SetDefaults()
     if ForeverTunedDB.settings.disableAutoGearCompare == nil then
         ForeverTunedDB.settings.disableAutoGearCompare = true
     end
+    if ForeverTunedDB.settings.redIconOutOfRange == nil then
+        ForeverTunedDB.settings.redIconOutOfRange = true
+    end
 end
 
 function Config:GetSetting(key)
@@ -44,7 +47,7 @@ end
 
 function Config:CreateUI()
     configFrame = CreateFrame("Frame", "ForeverTunedConfigFrame", UIParent, "PortraitFrameTemplate")
-    configFrame:SetSize(400, 500)
+    configFrame:SetSize(680, 340)
     configFrame:SetPoint("CENTER")
     configFrame:SetMovable(true)
     configFrame:EnableMouse(true)
@@ -72,57 +75,61 @@ function Config:CreateUI()
             Config:SetSetting("characterTabsAtBottom", originalSettings.characterTabsAtBottom)
             Config:SetSetting("characterTabsTextMode", originalSettings.characterTabsTextMode)
             Config:SetSetting("disableAutoGearCompare", originalSettings.disableAutoGearCompare)
+            Config:SetSetting("redIconOutOfRange", originalSettings.redIconOutOfRange)
             settingsChanged = false
         end
         configFrame:Hide()
     end)
 
-    local yOffset = -70
+    local LEFT_X  = 20
+    local RIGHT_X = 360
+    local ly = -70
+    local ry = -70
+
+    -- LEFT COLUMN
 
     local bagsHeader = configFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    bagsHeader:SetPoint("TOPLEFT", configFrame, "TOPLEFT", 20, yOffset)
+    bagsHeader:SetPoint("TOPLEFT", configFrame, "TOPLEFT", LEFT_X, ly)
     bagsHeader:SetText("Bags")
-    yOffset = yOffset - 30
-
-    yOffset = self:CreateMoveableBagCheckbox(yOffset)
-
-    yOffset = yOffset - 10
+    ly = ly - 30
+    ly = self:CreateMoveableBagCheckbox(ly, LEFT_X)
+    ly = ly - 10
 
     local targetHeader = configFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    targetHeader:SetPoint("TOPLEFT", configFrame, "TOPLEFT", 20, yOffset)
+    targetHeader:SetPoint("TOPLEFT", configFrame, "TOPLEFT", LEFT_X, ly)
     targetHeader:SetText("Target Frame")
-    yOffset = yOffset - 30
-
-    yOffset = self:CreateTargetClassIconCheckbox(yOffset)
-
-    yOffset = yOffset - 10
+    ly = ly - 30
+    ly = self:CreateTargetClassIconCheckbox(ly, LEFT_X)
+    ly = ly - 10
 
     local nameplatesHeader = configFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    nameplatesHeader:SetPoint("TOPLEFT", configFrame, "TOPLEFT", 20, yOffset)
+    nameplatesHeader:SetPoint("TOPLEFT", configFrame, "TOPLEFT", LEFT_X, ly)
     nameplatesHeader:SetText("Nameplates")
-    yOffset = yOffset - 30
+    ly = ly - 30
+    ly = self:CreateNameplateLevelCheckbox(ly, LEFT_X)
 
-    yOffset = self:CreateNameplateLevelCheckbox(yOffset)
-
-    yOffset = yOffset - 10
+    -- RIGHT COLUMN
 
     local characterHeader = configFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    characterHeader:SetPoint("TOPLEFT", configFrame, "TOPLEFT", 20, yOffset)
+    characterHeader:SetPoint("TOPLEFT", configFrame, "TOPLEFT", RIGHT_X, ry)
     characterHeader:SetText("Character Frame")
-    yOffset = yOffset - 30
-
-    yOffset = self:CreateCharacterTabsCheckbox(yOffset)
-
-    yOffset = self:CreateCharacterTabsTextModeCheckbox(yOffset)
-
-    yOffset = yOffset - 10
+    ry = ry - 30
+    ry = self:CreateCharacterTabsCheckbox(ry, RIGHT_X)
+    ry = self:CreateCharacterTabsTextModeCheckbox(ry, RIGHT_X)
+    ry = ry - 10
 
     local tooltipHeader = configFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    tooltipHeader:SetPoint("TOPLEFT", configFrame, "TOPLEFT", 20, yOffset)
+    tooltipHeader:SetPoint("TOPLEFT", configFrame, "TOPLEFT", RIGHT_X, ry)
     tooltipHeader:SetText("Tooltips")
-    yOffset = yOffset - 30
+    ry = ry - 30
+    ry = self:CreateDisableAutoGearCompareCheckbox(ry, RIGHT_X)
+    ry = ry - 10
 
-    yOffset = self:CreateDisableAutoGearCompareCheckbox(yOffset)
+    local actionBarHeader = configFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    actionBarHeader:SetPoint("TOPLEFT", configFrame, "TOPLEFT", RIGHT_X, ry)
+    actionBarHeader:SetText("Action Bar")
+    ry = ry - 30
+    ry = self:CreateRedIconOutOfRangeCheckbox(ry, RIGHT_X)
 
     configFrame.closeButton = CreateFrame("Button", nil, configFrame, "UIPanelButtonTemplate")
     configFrame.closeButton:SetSize(80, 22)
@@ -135,6 +142,7 @@ function Config:CreateUI()
             Config:SetSetting("nameplateLevelOnLeft", originalSettings.nameplateLevelOnLeft)
             Config:SetSetting("characterTabsAtBottom", originalSettings.characterTabsAtBottom)
             Config:SetSetting("disableAutoGearCompare", originalSettings.disableAutoGearCompare)
+            Config:SetSetting("redIconOutOfRange", originalSettings.redIconOutOfRange)
             settingsChanged = false
         end
         configFrame:Hide()
@@ -150,9 +158,9 @@ function Config:CreateUI()
     end)
 end
 
-function Config:CreateMoveableBagCheckbox(yOffset)
+function Config:CreateMoveableBagCheckbox(yOffset, x)
     configFrame.moveableBagCheck = CreateFrame("CheckButton", "ForeverTunedConfigMoveableBag", configFrame, "UICheckButtonTemplate")
-    configFrame.moveableBagCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", 20, yOffset)
+    configFrame.moveableBagCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", x, yOffset)
     configFrame.moveableBagCheck.text = configFrame.moveableBagCheck:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     configFrame.moveableBagCheck.text:SetPoint("LEFT", configFrame.moveableBagCheck, "RIGHT", 5, 0)
     configFrame.moveableBagCheck.text:SetText("Make combined bag moveable")
@@ -167,9 +175,9 @@ function Config:CreateMoveableBagCheckbox(yOffset)
     return yOffset - 30
 end
 
-function Config:CreateTargetClassIconCheckbox(yOffset)
+function Config:CreateTargetClassIconCheckbox(yOffset, x)
     configFrame.targetClassIconCheck = CreateFrame("CheckButton", "ForeverTunedConfigTargetClassIcon", configFrame, "UICheckButtonTemplate")
-    configFrame.targetClassIconCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", 20, yOffset)
+    configFrame.targetClassIconCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", x, yOffset)
     configFrame.targetClassIconCheck.text = configFrame.targetClassIconCheck:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     configFrame.targetClassIconCheck.text:SetPoint("LEFT", configFrame.targetClassIconCheck, "RIGHT", 5, 0)
     configFrame.targetClassIconCheck.text:SetText("Show target player's class icon")
@@ -184,9 +192,9 @@ function Config:CreateTargetClassIconCheckbox(yOffset)
     return yOffset - 30
 end
 
-function Config:CreateNameplateLevelCheckbox(yOffset)
+function Config:CreateNameplateLevelCheckbox(yOffset, x)
     configFrame.nameplateLevelCheck = CreateFrame("CheckButton", "ForeverTunedConfigNameplateLevel", configFrame, "UICheckButtonTemplate")
-    configFrame.nameplateLevelCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", 20, yOffset)
+    configFrame.nameplateLevelCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", x, yOffset)
     configFrame.nameplateLevelCheck.text = configFrame.nameplateLevelCheck:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     configFrame.nameplateLevelCheck.text:SetPoint("LEFT", configFrame.nameplateLevelCheck, "RIGHT", 5, 0)
     configFrame.nameplateLevelCheck.text:SetText("Show level on the left side")
@@ -201,9 +209,9 @@ function Config:CreateNameplateLevelCheckbox(yOffset)
     return yOffset - 30
 end
 
-function Config:CreateCharacterTabsCheckbox(yOffset)
+function Config:CreateCharacterTabsCheckbox(yOffset, x)
     configFrame.characterTabsCheck = CreateFrame("CheckButton", "ForeverTunedConfigCharacterTabs", configFrame, "UICheckButtonTemplate")
-    configFrame.characterTabsCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", 20, yOffset)
+    configFrame.characterTabsCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", x, yOffset)
     configFrame.characterTabsCheck.text = configFrame.characterTabsCheck:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     configFrame.characterTabsCheck.text:SetPoint("LEFT", configFrame.characterTabsCheck, "RIGHT", 5, 0)
     configFrame.characterTabsCheck.text:SetText("Move tabs to the bottom")
@@ -230,9 +238,9 @@ function Config:UpdateCharacterTabsTextModeState()
     end
 end
 
-function Config:CreateCharacterTabsTextModeCheckbox(yOffset)
+function Config:CreateCharacterTabsTextModeCheckbox(yOffset, x)
     configFrame.characterTabsTextModeCheck = CreateFrame("CheckButton", "ForeverTunedConfigCharacterTabsTextMode", configFrame, "UICheckButtonTemplate")
-    configFrame.characterTabsTextModeCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", 40, yOffset)
+    configFrame.characterTabsTextModeCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", x + 20, yOffset)
     configFrame.characterTabsTextModeCheck.text = configFrame.characterTabsTextModeCheck:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     configFrame.characterTabsTextModeCheck.text:SetPoint("LEFT", configFrame.characterTabsTextModeCheck, "RIGHT", 5, 0)
     configFrame.characterTabsTextModeCheck.text:SetText("Use text labels (classic style)")
@@ -248,9 +256,9 @@ function Config:CreateCharacterTabsTextModeCheckbox(yOffset)
     return yOffset - 30
 end
 
-function Config:CreateDisableAutoGearCompareCheckbox(yOffset)
+function Config:CreateDisableAutoGearCompareCheckbox(yOffset, x)
     configFrame.disableAutoGearCompareCheck = CreateFrame("CheckButton", "ForeverTunedConfigDisableAutoGearCompare", configFrame, "UICheckButtonTemplate")
-    configFrame.disableAutoGearCompareCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", 20, yOffset)
+    configFrame.disableAutoGearCompareCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", x, yOffset)
     configFrame.disableAutoGearCompareCheck.text = configFrame.disableAutoGearCompareCheck:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     configFrame.disableAutoGearCompareCheck.text:SetPoint("LEFT", configFrame.disableAutoGearCompareCheck, "RIGHT", 5, 0)
     configFrame.disableAutoGearCompareCheck.text:SetText("Do not auto compare gear upgrades")
@@ -274,7 +282,8 @@ function Config:ShowUI()
             nameplateLevelOnLeft = self:GetSetting("nameplateLevelOnLeft"),
             characterTabsAtBottom = self:GetSetting("characterTabsAtBottom"),
             characterTabsTextMode = self:GetSetting("characterTabsTextMode"),
-            disableAutoGearCompare = self:GetSetting("disableAutoGearCompare")
+            disableAutoGearCompare = self:GetSetting("disableAutoGearCompare"),
+            redIconOutOfRange = self:GetSetting("redIconOutOfRange"),
         }
         if configFrame.reloadButton then
             configFrame.reloadButton:Disable()
@@ -298,8 +307,28 @@ function Config:ShowUI()
         if configFrame.disableAutoGearCompareCheck then
             configFrame.disableAutoGearCompareCheck:SetChecked(self:GetSetting("disableAutoGearCompare"))
         end
+        if configFrame.redIconOutOfRangeCheck then
+            configFrame.redIconOutOfRangeCheck:SetChecked(self:GetSetting("redIconOutOfRange"))
+        end
         configFrame:Show()
     end
+end
+
+function Config:CreateRedIconOutOfRangeCheckbox(yOffset, x)
+    configFrame.redIconOutOfRangeCheck = CreateFrame("CheckButton", "ForeverTunedConfigRedIconOutOfRange", configFrame, "UICheckButtonTemplate")
+    configFrame.redIconOutOfRangeCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", x, yOffset)
+    configFrame.redIconOutOfRangeCheck.text = configFrame.redIconOutOfRangeCheck:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    configFrame.redIconOutOfRangeCheck.text:SetPoint("LEFT", configFrame.redIconOutOfRangeCheck, "RIGHT", 5, 0)
+    configFrame.redIconOutOfRangeCheck.text:SetText("Red icon when out of range")
+    configFrame.redIconOutOfRangeCheck:SetChecked(self:GetSetting("redIconOutOfRange"))
+    configFrame.redIconOutOfRangeCheck:SetScript("OnClick", function(self)
+        Config:SetSetting("redIconOutOfRange", self:GetChecked())
+        settingsChanged = true
+        if configFrame.reloadButton then
+            configFrame.reloadButton:Enable()
+        end
+    end)
+    return yOffset - 30
 end
 
 function Config:RegisterSlashCommand()
