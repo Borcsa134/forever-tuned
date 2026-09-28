@@ -4,3 +4,4 @@ ignore:
   - .gitignore
   - .pkgmeta
   - README.md
+  - Makefile
