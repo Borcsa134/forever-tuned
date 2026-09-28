@@ -27,7 +27,16 @@ function Bags:SavePosition()
 end
 
 function Bags:MakeCombinedBagMoveable()
-    local isRestoring = false
+    local isSetting = false
+
+    local function applyPosition()
+        if not ForeverTunedDB.Bags.CombinedBagPosition then return end
+        local pos = ForeverTunedDB.Bags.CombinedBagPosition
+        isSetting = true
+        ContainerFrameCombinedBags:ClearAllPoints()
+        ContainerFrameCombinedBags:SetPoint(pos.point, UIParent, pos.relativePoint, pos.xOfs, pos.yOfs)
+        isSetting = false
+    end
 
     local function setupMoveable()
         if ContainerFrameCombinedBags then
@@ -44,31 +53,17 @@ function Bags:MakeCombinedBagMoveable()
                 Bags:SavePosition()
             end)
 
-            ContainerFrameCombinedBags:HookScript("OnShow", function(self)
-                if not isRestoring and ForeverTunedDB.Bags.CombinedBagPosition then
-                    isRestoring = true
-                    local pos = ForeverTunedDB.Bags.CombinedBagPosition
-                    self:Hide()
-
-                    local frame = CreateFrame("Frame")
-                    frame:SetScript("OnUpdate", function(self)
-                        ContainerFrameCombinedBags:ClearAllPoints()
-                        ContainerFrameCombinedBags:SetPoint(pos.point, UIParent, pos.relativePoint, pos.xOfs, pos.yOfs)
-                        ContainerFrameCombinedBags:Show()
-
-                        self:SetScript("OnUpdate", function(self)
-                            isRestoring = false
-                            self:SetScript("OnUpdate", nil)
-                        end)
+            hooksecurefunc(ContainerFrameCombinedBags, "SetPoint", function()
+                if not isSetting and ForeverTunedDB.Bags.CombinedBagPosition then
+                    local ticker = CreateFrame("Frame")
+                    ticker:SetScript("OnUpdate", function(self)
+                        self:SetScript("OnUpdate", nil)
+                        applyPosition()
                     end)
                 end
             end)
 
-            if ForeverTunedDB.Bags.CombinedBagPosition then
-                local pos = ForeverTunedDB.Bags.CombinedBagPosition
-                ContainerFrameCombinedBags:ClearAllPoints()
-                ContainerFrameCombinedBags:SetPoint(pos.point, UIParent, pos.relativePoint, pos.xOfs, pos.yOfs)
-            end
+            applyPosition()
 
             return true
         end
@@ -87,49 +82,32 @@ function Bags:MakeCombinedBagMoveable()
 end
 
 function Bags:AnchorReagentBag()
-    ToggleAllBags = function()
-        if ContainerFrameCombinedBags and ContainerFrame6 then
-            if ContainerFrameCombinedBags:IsShown() then
-                CloseAllBags()
-            else
-                OpenAllBags()
+    local function anchorDeferred()
+        local ticker = CreateFrame("Frame")
+        ticker:SetScript("OnUpdate", function(self)
+            self:SetScript("OnUpdate", nil)
+            if ContainerFrame6:IsShown() and ContainerFrameCombinedBags:IsShown() then
+                ContainerFrame6:ClearAllPoints()
+                ContainerFrame6:SetPoint("TOPRIGHT", ContainerFrameCombinedBags, "TOPLEFT", -5, 0)
             end
-        end
+        end)
     end
 
     local function setupReagentBag()
         if ContainerFrame6 and ContainerFrameCombinedBags then
-            ContainerFrame6:ClearAllPoints()
-            ContainerFrame6:SetPoint("TOPRIGHT", ContainerFrameCombinedBags, "TOPLEFT", -5, 0)
-
             hooksecurefunc(ContainerFrame6, "Show", function()
-                if ContainerFrameCombinedBags:IsShown() then
-                    ContainerFrame6:ClearAllPoints()
-                    ContainerFrame6:SetPoint("TOPRIGHT", ContainerFrameCombinedBags, "TOPLEFT", -5, 0)
-                else
-                    OpenAllBags()
-                end
+                anchorDeferred()
             end)
 
             hooksecurefunc(ContainerFrameCombinedBags, "Show", function()
-                if not ContainerFrame6:IsShown() then
-                    OpenBag(5)
-                end
-                    ContainerFrame6:ClearAllPoints()
-                    ContainerFrame6:SetPoint("TOPRIGHT", ContainerFrameCombinedBags, "TOPLEFT", -5, 0)
-            end)
-
-            hooksecurefunc(ContainerFrameCombinedBags, "Hide", function()
                 if ContainerFrame6:IsShown() then
-                    CloseBag(5)
+                    anchorDeferred()
                 end
             end)
 
-            hooksecurefunc(ContainerFrame6, "Hide", function()
-                if ContainerFrameCombinedBags:IsShown() then
-                    CloseAllBags()
-                end
-            end)
+            if ContainerFrame6:IsShown() and ContainerFrameCombinedBags:IsShown() then
+                anchorDeferred()
+            end
 
             return true
         end
