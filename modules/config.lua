@@ -35,6 +35,9 @@ function Config:SetDefaults()
     if ForeverTunedDB.settings.redIconOutOfRange == nil then
         ForeverTunedDB.settings.redIconOutOfRange = true
     end
+    if ForeverTunedDB.settings.moveableBank == nil then
+        ForeverTunedDB.settings.moveableBank = true
+    end
 end
 
 function Config:GetSetting(key)
@@ -70,6 +73,7 @@ function Config:CreateUI()
     configFrame.CloseButton:SetScript("OnClick", function()
         if settingsChanged then
             Config:SetSetting("moveableCombinedBag", originalSettings.moveableCombinedBag)
+            Config:SetSetting("moveableBank", originalSettings.moveableBank)
             Config:SetSetting("showTargetClassIcon", originalSettings.showTargetClassIcon)
             Config:SetSetting("nameplateLevelOnLeft", originalSettings.nameplateLevelOnLeft)
             Config:SetSetting("characterTabsAtBottom", originalSettings.characterTabsAtBottom)
@@ -93,6 +97,8 @@ function Config:CreateUI()
     bagsHeader:SetText("Bags")
     ly = ly - 30
     ly = self:CreateMoveableBagCheckbox(ly, LEFT_X)
+    ly = ly - 10
+    ly = self:CreateMoveableBankCheckbox(ly, LEFT_X)
     ly = ly - 10
 
     local targetHeader = configFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
@@ -138,9 +144,11 @@ function Config:CreateUI()
     configFrame.closeButton:SetScript("OnClick", function()
         if settingsChanged then
             Config:SetSetting("moveableCombinedBag", originalSettings.moveableCombinedBag)
+            Config:SetSetting("moveableBank", originalSettings.moveableBank)
             Config:SetSetting("showTargetClassIcon", originalSettings.showTargetClassIcon)
             Config:SetSetting("nameplateLevelOnLeft", originalSettings.nameplateLevelOnLeft)
             Config:SetSetting("characterTabsAtBottom", originalSettings.characterTabsAtBottom)
+            Config:SetSetting("characterTabsTextMode", originalSettings.characterTabsTextMode)
             Config:SetSetting("disableAutoGearCompare", originalSettings.disableAutoGearCompare)
             Config:SetSetting("redIconOutOfRange", originalSettings.redIconOutOfRange)
             settingsChanged = false
@@ -167,6 +175,23 @@ function Config:CreateMoveableBagCheckbox(yOffset, x)
     configFrame.moveableBagCheck:SetChecked(self:GetSetting("moveableCombinedBag"))
     configFrame.moveableBagCheck:SetScript("OnClick", function(self)
         Config:SetSetting("moveableCombinedBag", self:GetChecked())
+        settingsChanged = true
+        if configFrame.reloadButton then
+            configFrame.reloadButton:Enable()
+        end
+    end)
+    return yOffset - 30
+end
+
+function Config:CreateMoveableBankCheckbox(yOffset, x)
+    configFrame.moveableBankCheck = CreateFrame("CheckButton", "ForeverTunedConfigMoveableBank", configFrame, "UICheckButtonTemplate")
+    configFrame.moveableBankCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", x, yOffset)
+    configFrame.moveableBankCheck.text = configFrame.moveableBankCheck:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    configFrame.moveableBankCheck.text:SetPoint("LEFT", configFrame.moveableBankCheck, "RIGHT", 5, 0)
+    configFrame.moveableBankCheck.text:SetText("Make bank moveable")
+    configFrame.moveableBankCheck:SetChecked(self:GetSetting("moveableBank"))
+    configFrame.moveableBankCheck:SetScript("OnClick", function(self)
+        Config:SetSetting("moveableBank", self:GetChecked())
         settingsChanged = true
         if configFrame.reloadButton then
             configFrame.reloadButton:Enable()
@@ -278,6 +303,7 @@ function Config:ShowUI()
         settingsChanged = false
         originalSettings = {
             moveableCombinedBag = self:GetSetting("moveableCombinedBag"),
+            moveableBank = self:GetSetting("moveableBank"),
             showTargetClassIcon = self:GetSetting("showTargetClassIcon"),
             nameplateLevelOnLeft = self:GetSetting("nameplateLevelOnLeft"),
             characterTabsAtBottom = self:GetSetting("characterTabsAtBottom"),
@@ -290,6 +316,9 @@ function Config:ShowUI()
         end
         if configFrame.moveableBagCheck then
             configFrame.moveableBagCheck:SetChecked(self:GetSetting("moveableCombinedBag"))
+        end
+        if configFrame.moveableBankCheck then
+            configFrame.moveableBankCheck:SetChecked(self:GetSetting("moveableBank"))
         end
         if configFrame.targetClassIconCheck then
             configFrame.targetClassIconCheck:SetChecked(self:GetSetting("showTargetClassIcon"))

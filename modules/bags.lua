@@ -9,13 +9,85 @@ function Bags:Initialize()
         self:AnchorReagentBag()
         self:OverrideBagKeybind()
     end
+
+    if ForeverTuned.modules.Config:GetSetting("moveableBank") then
+        self:MakeBankMoveable()
+    end
 end
 
 function Bags:OnLogout()
-    self:SavePosition()
+    self:SaveBagPosition()
+    self:SaveBankPosition()
 end
 
-function Bags:SavePosition()
+function Bags:SaveBankPosition()
+    if BankFrame and BankFrame:IsShown() then
+        local point, _, relativePoint, xOfs, yOfs = BankFrame:GetPoint()
+        ForeverTunedDB.Bags.BankPosition = {
+            point = point,
+            relativePoint = relativePoint,
+            xOfs = xOfs,
+            yOfs = yOfs
+        }
+    end
+end
+
+function Bags:MakeBankMoveable()
+    local isSetting = false
+
+    local function applyPosition()
+        if not ForeverTunedDB.Bags.BankPosition then return end
+        local pos = ForeverTunedDB.Bags.BankPosition
+        isSetting = true
+        BankFrame:ClearAllPoints()
+        BankFrame:SetPoint(pos.point, UIParent, pos.relativePoint, pos.xOfs, pos.yOfs)
+        isSetting = false
+    end
+
+    local function setupMoveable()
+        if BankFrame then
+            BankFrame:SetMovable(true)
+            BankFrame:EnableMouse(true)
+            BankFrame:RegisterForDrag("LeftButton")
+
+            BankFrame:SetScript("OnDragStart", function(self)
+                self:StartMoving()
+            end)
+
+            BankFrame:SetScript("OnDragStop", function(self)
+                self:StopMovingOrSizing()
+                Bags:SaveBankPosition()
+            end)
+
+            hooksecurefunc(BankFrame, "SetPoint", function()
+                if not isSetting and ForeverTunedDB.Bags.BankPosition then
+                    local ticker = CreateFrame("Frame")
+                    ticker:SetScript("OnUpdate", function(self)
+                        self:SetScript("OnUpdate", nil)
+                        applyPosition()
+                    end)
+                end
+            end)
+
+            applyPosition()
+
+            return true
+        end
+        return false
+    end
+
+    if not setupMoveable() then
+        local waitFrame = CreateFrame("Frame")
+        waitFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+        waitFrame:SetScript("OnEvent", function(self, event)
+            if setupMoveable() then
+                self:UnregisterAllEvents()
+            end
+        end)
+    end
+end
+
+function Bags:SaveBagPosition()
     if ContainerFrameCombinedBags then
         local point, _, relativePoint, xOfs, yOfs = ContainerFrameCombinedBags:GetPoint()
         ForeverTunedDB.Bags.CombinedBagPosition = {
@@ -51,7 +123,7 @@ function Bags:MakeCombinedBagMoveable()
 
             ContainerFrameCombinedBags:SetScript("OnDragStop", function(self)
                 self:StopMovingOrSizing()
-                Bags:SavePosition()
+                Bags:SaveBagPosition()
             end)
 
             hooksecurefunc(ContainerFrameCombinedBags, "SetPoint", function()
