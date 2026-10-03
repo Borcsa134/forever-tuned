@@ -58,13 +58,11 @@ local function UpdateButton(btn)
     local inRange = C_ActionBar.IsActionInRange(slot)
 
     if inRange == false then
-        if not btn.ftOutOfRange then
-            local icon = btn.icon or btn.Icon
-            if icon then
-                icon:SetVertexColor(RANGE_COLOR[1], RANGE_COLOR[2], RANGE_COLOR[3])
-            end
-            btn.ftOutOfRange = true
+        local icon = btn.icon or btn.Icon
+        if icon then
+            icon:SetVertexColor(RANGE_COLOR[1], RANGE_COLOR[2], RANGE_COLOR[3])
         end
+        btn.ftOutOfRange = true
     else
         if btn.ftOutOfRange then
             RestoreNormalColor(btn, slot)
