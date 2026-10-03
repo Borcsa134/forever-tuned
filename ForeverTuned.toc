@@ -2,7 +2,6 @@
 ## Title: Forever Tuned
 ## Notes: UI tweaks and enhancements for WoW Forever
 ## Author: Boris Makes Stuff
-## Version: 1.0.0
 ## SavedVariables: ForeverTunedDB
 ## Version: @project-version@
 ## X-Curse-Project-ID: 1709064
