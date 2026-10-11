@@ -5,38 +5,32 @@ local TAB_SPECS = {
     {
         label = "Character",
         panel = "PaperDollFrame",
-        activate = function() ToggleCharacter("PaperDollFrame") end,
+        activate = function() ToggleCharacter("PaperDollFrame", true) end,
     },
     {
         label = "Reputation",
         panel = "ReputationFrame",
-        activate = function() ToggleCharacter("ReputationFrame") end,
+        activate = function() ToggleCharacter("ReputationFrame", true) end,
     },
     {
         label = "Currency",
         panel = "TokenFrame",
-        activate = function()
-            if CharacterFrame and CharacterFrame.ToggleTokenFrame then
-                CharacterFrame:ToggleTokenFrame()
-            else
-                ToggleCharacter("TokenFrame")
-            end
-        end,
+        activate = function() ToggleCharacter("TokenFrame", true) end,
     },
     {
         label = "PvP",
         panel = "PVPRankFrame",
-        activate = function() ToggleCharacter("PVPRankFrame") end,
+        activate = function() ToggleCharacter("PVPRankFrame", true) end,
     },
     {
         label = "Skills",
         panel = "SkillsFrame",
-        activate = function() ToggleCharacter("SkillsFrame") end,
+        activate = function() ToggleCharacter("SkillsFrame", true) end,
     },
     {
         label = "Statistics",
         panel = "StatisticsFrame",
-        activate = function() ToggleCharacter("StatisticsFrame") end,
+        activate = function() ToggleCharacter("StatisticsFrame", true) end,
     },
 }
 
