@@ -91,6 +91,10 @@ function CharacterFrameModule:RepositionTabs()
             if tab then tab:Hide() end
         end
 
+        if CharacterFrameRightPaneToggleButton then
+            CharacterFrameRightPaneToggleButton:Hide()
+        end
+
         if not self.overlays then
             self.overlays = {}
             for i, spec in ipairs(TAB_SPECS) do
