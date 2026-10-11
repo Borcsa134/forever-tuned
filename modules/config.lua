@@ -26,9 +26,6 @@ function Config:SetDefaults()
     if ForeverTunedDB.settings.characterTabsAtBottom == nil then
         ForeverTunedDB.settings.characterTabsAtBottom = true
     end
-    if ForeverTunedDB.settings.characterTabsTextMode == nil then
-        ForeverTunedDB.settings.characterTabsTextMode = true
-    end
     if ForeverTunedDB.settings.disableAutoGearCompare == nil then
         ForeverTunedDB.settings.disableAutoGearCompare = true
     end
@@ -77,7 +74,6 @@ function Config:CreateUI()
             Config:SetSetting("showTargetClassIcon", originalSettings.showTargetClassIcon)
             Config:SetSetting("nameplateLevelOnLeft", originalSettings.nameplateLevelOnLeft)
             Config:SetSetting("characterTabsAtBottom", originalSettings.characterTabsAtBottom)
-            Config:SetSetting("characterTabsTextMode", originalSettings.characterTabsTextMode)
             Config:SetSetting("disableAutoGearCompare", originalSettings.disableAutoGearCompare)
             Config:SetSetting("redIconOutOfRange", originalSettings.redIconOutOfRange)
             settingsChanged = false
@@ -121,7 +117,6 @@ function Config:CreateUI()
     characterHeader:SetText("Character Frame")
     ry = ry - 30
     ry = self:CreateCharacterTabsCheckbox(ry, RIGHT_X)
-    ry = self:CreateCharacterTabsTextModeCheckbox(ry, RIGHT_X)
     ry = ry - 10
 
     local tooltipHeader = configFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
@@ -148,7 +143,6 @@ function Config:CreateUI()
             Config:SetSetting("showTargetClassIcon", originalSettings.showTargetClassIcon)
             Config:SetSetting("nameplateLevelOnLeft", originalSettings.nameplateLevelOnLeft)
             Config:SetSetting("characterTabsAtBottom", originalSettings.characterTabsAtBottom)
-            Config:SetSetting("characterTabsTextMode", originalSettings.characterTabsTextMode)
             Config:SetSetting("disableAutoGearCompare", originalSettings.disableAutoGearCompare)
             Config:SetSetting("redIconOutOfRange", originalSettings.redIconOutOfRange)
             settingsChanged = false
@@ -247,37 +241,7 @@ function Config:CreateCharacterTabsCheckbox(yOffset, x)
         if configFrame.reloadButton then
             configFrame.reloadButton:Enable()
         end
-        Config:UpdateCharacterTabsTextModeState()
     end)
-    return yOffset - 30
-end
-
-function Config:UpdateCharacterTabsTextModeState()
-    if not configFrame.characterTabsTextModeCheck then return end
-    if self:GetSetting("characterTabsAtBottom") then
-        configFrame.characterTabsTextModeCheck:Enable()
-        configFrame.characterTabsTextModeCheck.text:SetTextColor(1, 0.82, 0)
-    else
-        configFrame.characterTabsTextModeCheck:Disable()
-        configFrame.characterTabsTextModeCheck.text:SetTextColor(0.5, 0.5, 0.5)
-    end
-end
-
-function Config:CreateCharacterTabsTextModeCheckbox(yOffset, x)
-    configFrame.characterTabsTextModeCheck = CreateFrame("CheckButton", "ForeverTunedConfigCharacterTabsTextMode", configFrame, "UICheckButtonTemplate")
-    configFrame.characterTabsTextModeCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", x + 20, yOffset)
-    configFrame.characterTabsTextModeCheck.text = configFrame.characterTabsTextModeCheck:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    configFrame.characterTabsTextModeCheck.text:SetPoint("LEFT", configFrame.characterTabsTextModeCheck, "RIGHT", 5, 0)
-    configFrame.characterTabsTextModeCheck.text:SetText("Use text labels (classic style)")
-    configFrame.characterTabsTextModeCheck:SetChecked(self:GetSetting("characterTabsTextMode"))
-    configFrame.characterTabsTextModeCheck:SetScript("OnClick", function(self)
-        Config:SetSetting("characterTabsTextMode", self:GetChecked())
-        settingsChanged = true
-        if configFrame.reloadButton then
-            configFrame.reloadButton:Enable()
-        end
-    end)
-    self:UpdateCharacterTabsTextModeState()
     return yOffset - 30
 end
 
@@ -307,7 +271,6 @@ function Config:ShowUI()
             showTargetClassIcon = self:GetSetting("showTargetClassIcon"),
             nameplateLevelOnLeft = self:GetSetting("nameplateLevelOnLeft"),
             characterTabsAtBottom = self:GetSetting("characterTabsAtBottom"),
-            characterTabsTextMode = self:GetSetting("characterTabsTextMode"),
             disableAutoGearCompare = self:GetSetting("disableAutoGearCompare"),
             redIconOutOfRange = self:GetSetting("redIconOutOfRange"),
         }
@@ -329,10 +292,6 @@ function Config:ShowUI()
         if configFrame.characterTabsCheck then
             configFrame.characterTabsCheck:SetChecked(self:GetSetting("characterTabsAtBottom"))
         end
-        if configFrame.characterTabsTextModeCheck then
-            configFrame.characterTabsTextModeCheck:SetChecked(self:GetSetting("characterTabsTextMode"))
-        end
-        self:UpdateCharacterTabsTextModeState()
         if configFrame.disableAutoGearCompareCheck then
             configFrame.disableAutoGearCompareCheck:SetChecked(self:GetSetting("disableAutoGearCompare"))
         end
