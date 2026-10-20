@@ -74,9 +74,17 @@ end
 local POLL_INTERVAL = 0.1
 local elapsed = 0
 
-function ActionBar:Initialize()
-    if not ForeverTuned.modules.Config:GetSetting("redIconOutOfRange") then return end
+local function ClearButton(btn)
+    if btn.ftOutOfRange then
+        local slot = GetButtonAction(btn)
+        if slot then
+            RestoreNormalColor(btn, slot)
+        end
+        btn.ftOutOfRange = nil
+    end
+end
 
+function ActionBar:Initialize()
     CollectButtons()
 
     local f = CreateFrame("Frame")
@@ -84,8 +92,14 @@ function ActionBar:Initialize()
         elapsed = elapsed + e
         if elapsed < POLL_INTERVAL then return end
         elapsed = 0
-        for _, btn in ipairs(trackedButtons) do
-            UpdateButton(btn)
+        if ForeverTuned.modules.Config:GetSetting("redIconOutOfRange") then
+            for _, btn in ipairs(trackedButtons) do
+                UpdateButton(btn)
+            end
+        else
+            for _, btn in ipairs(trackedButtons) do
+                ClearButton(btn)
+            end
         end
     end)
 end

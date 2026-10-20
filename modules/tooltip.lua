@@ -2,9 +2,7 @@ local TooltipModule = {}
 ForeverTuned.modules.Tooltip = TooltipModule
 
 function TooltipModule:Initialize()
-    if ForeverTuned.modules.Config:GetSetting("disableAutoGearCompare") then
-        self:DisableAutoGearCompare()
-    end
+    self:DisableAutoGearCompare()
 end
 
 function TooltipModule:DisableAutoGearCompare()
