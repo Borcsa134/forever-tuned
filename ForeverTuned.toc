@@ -12,5 +12,6 @@ modules/bags.lua
 modules/targetframe.lua
 modules/nameplates.lua
 modules/characterframe.lua
+modules/professionsframe.lua
 modules/tooltip.lua
 modules/actionbar.lua

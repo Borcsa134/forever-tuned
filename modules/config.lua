@@ -26,6 +26,9 @@ function Config:SetDefaults()
     if ForeverTunedDB.settings.characterTabsAtBottom == nil then
         ForeverTunedDB.settings.characterTabsAtBottom = true
     end
+    if ForeverTunedDB.settings.professionsTabsAtBottom == nil then
+        ForeverTunedDB.settings.professionsTabsAtBottom = true
+    end
     if ForeverTunedDB.settings.disableAutoGearCompare == nil then
         ForeverTunedDB.settings.disableAutoGearCompare = true
     end
@@ -74,6 +77,7 @@ function Config:CreateUI()
             Config:SetSetting("showTargetClassIcon", originalSettings.showTargetClassIcon)
             Config:SetSetting("nameplateLevelOnLeft", originalSettings.nameplateLevelOnLeft)
             Config:SetSetting("characterTabsAtBottom", originalSettings.characterTabsAtBottom)
+            Config:SetSetting("professionsTabsAtBottom", originalSettings.professionsTabsAtBottom)
             Config:SetSetting("disableAutoGearCompare", originalSettings.disableAutoGearCompare)
             Config:SetSetting("redIconOutOfRange", originalSettings.redIconOutOfRange)
             settingsChanged = false
@@ -119,6 +123,13 @@ function Config:CreateUI()
     ry = self:CreateCharacterTabsCheckbox(ry, RIGHT_X)
     ry = ry - 10
 
+    local professionsHeader = configFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    professionsHeader:SetPoint("TOPLEFT", configFrame, "TOPLEFT", RIGHT_X, ry)
+    professionsHeader:SetText("Professions")
+    ry = ry - 30
+    ry = self:CreateProfessionsTabsCheckbox(ry, RIGHT_X)
+    ry = ry - 10
+
     local tooltipHeader = configFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     tooltipHeader:SetPoint("TOPLEFT", configFrame, "TOPLEFT", RIGHT_X, ry)
     tooltipHeader:SetText("Tooltips")
@@ -143,6 +154,7 @@ function Config:CreateUI()
             Config:SetSetting("showTargetClassIcon", originalSettings.showTargetClassIcon)
             Config:SetSetting("nameplateLevelOnLeft", originalSettings.nameplateLevelOnLeft)
             Config:SetSetting("characterTabsAtBottom", originalSettings.characterTabsAtBottom)
+            Config:SetSetting("professionsTabsAtBottom", originalSettings.professionsTabsAtBottom)
             Config:SetSetting("disableAutoGearCompare", originalSettings.disableAutoGearCompare)
             Config:SetSetting("redIconOutOfRange", originalSettings.redIconOutOfRange)
             settingsChanged = false
@@ -245,6 +257,23 @@ function Config:CreateCharacterTabsCheckbox(yOffset, x)
     return yOffset - 30
 end
 
+function Config:CreateProfessionsTabsCheckbox(yOffset, x)
+    configFrame.professionsTabsCheck = CreateFrame("CheckButton", "ForeverTunedConfigProfessionsTabs", configFrame, "UICheckButtonTemplate")
+    configFrame.professionsTabsCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", x, yOffset)
+    configFrame.professionsTabsCheck.text = configFrame.professionsTabsCheck:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    configFrame.professionsTabsCheck.text:SetPoint("LEFT", configFrame.professionsTabsCheck, "RIGHT", 5, 0)
+    configFrame.professionsTabsCheck.text:SetText("Move tabs to the bottom")
+    configFrame.professionsTabsCheck:SetChecked(self:GetSetting("professionsTabsAtBottom"))
+    configFrame.professionsTabsCheck:SetScript("OnClick", function(self)
+        Config:SetSetting("professionsTabsAtBottom", self:GetChecked())
+        settingsChanged = true
+        if configFrame.reloadButton then
+            configFrame.reloadButton:Enable()
+        end
+    end)
+    return yOffset - 30
+end
+
 function Config:CreateDisableAutoGearCompareCheckbox(yOffset, x)
     configFrame.disableAutoGearCompareCheck = CreateFrame("CheckButton", "ForeverTunedConfigDisableAutoGearCompare", configFrame, "UICheckButtonTemplate")
     configFrame.disableAutoGearCompareCheck:SetPoint("TOPLEFT", configFrame, "TOPLEFT", x, yOffset)
@@ -271,6 +300,7 @@ function Config:ShowUI()
             showTargetClassIcon = self:GetSetting("showTargetClassIcon"),
             nameplateLevelOnLeft = self:GetSetting("nameplateLevelOnLeft"),
             characterTabsAtBottom = self:GetSetting("characterTabsAtBottom"),
+            professionsTabsAtBottom = self:GetSetting("professionsTabsAtBottom"),
             disableAutoGearCompare = self:GetSetting("disableAutoGearCompare"),
             redIconOutOfRange = self:GetSetting("redIconOutOfRange"),
         }
@@ -291,6 +321,9 @@ function Config:ShowUI()
         end
         if configFrame.characterTabsCheck then
             configFrame.characterTabsCheck:SetChecked(self:GetSetting("characterTabsAtBottom"))
+        end
+        if configFrame.professionsTabsCheck then
+            configFrame.professionsTabsCheck:SetChecked(self:GetSetting("professionsTabsAtBottom"))
         end
         if configFrame.disableAutoGearCompareCheck then
             configFrame.disableAutoGearCompareCheck:SetChecked(self:GetSetting("disableAutoGearCompare"))
