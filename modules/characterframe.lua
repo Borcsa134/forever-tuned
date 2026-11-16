@@ -82,7 +82,19 @@ function CharacterFrameModule:RepositionTabs()
     C_Timer.After(0.1, function()
         local nativeTabs = GetNativeTabs()
         for _, tab in ipairs(nativeTabs) do
-            if tab then tab:Hide() end
+            if tab then
+                tab:Hide()
+                if not tab.foreverTunedHidden then
+                    tab.foreverTunedHidden = true
+                    hooksecurefunc(tab, "Show", function(self)
+                        if not self.foreverTunedHiding then
+                            self.foreverTunedHiding = true
+                            self:Hide()
+                            self.foreverTunedHiding = false
+                        end
+                    end)
+                end
+            end
         end
 
         if CharacterFrameRightPaneToggleButton then
