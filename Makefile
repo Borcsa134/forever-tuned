@@ -1,6 +1,6 @@
 .PHONY: install
 
-ADDON_DIR = /Applications/World of Warcraft/_classic_beta_/Interface/AddOns/ForeverTuned
+ADDON_DIR = /Applications/World of Warcraft/_forever_/Interface/AddOns/ForeverTuned
 
 install:
 	@echo "Installing ForeverTuned addon..."
