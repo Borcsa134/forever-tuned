@@ -32,13 +32,37 @@ function NamePlates:AdjustNamePlate(nameplate)
         return
     end
 
-    local healthBar = nameplate.UnitFrame.healthBar or nameplate.UnitFrame.HealthBar
-    local levelDiffFrame = nameplate.UnitFrame.PlayerLevelDiffFrame
+    local unitFrame = nameplate.UnitFrame
+    local healthBar = unitFrame.healthBar or unitFrame.HealthBar
+    local levelDiffFrame = unitFrame.PlayerLevelDiffFrame
 
     if levelDiffFrame and healthBar and not levelDiffFrame.foreverTunedMoved then
         levelDiffFrame:ClearAllPoints()
         levelDiffFrame:SetPoint("RIGHT", healthBar, "LEFT", -2, 0)
         levelDiffFrame.foreverTunedMoved = true
+    end
+
+    if unitFrame.UpdateControlAnchors and not unitFrame.foreverTunedControlHook then
+        unitFrame.foreverTunedControlHook = true
+        hooksecurefunc(unitFrame, "UpdateControlAnchors", function(self)
+            local aurasFrame = self.AurasFrame
+            local container = self.HealthBarsContainer
+            if not aurasFrame or not container then
+                return
+            end
+
+            local crowdControlListFrame = aurasFrame.CrowdControlListFrame
+            local lossOfControlFrame = aurasFrame.LossOfControlFrame
+
+            if crowdControlListFrame then
+                crowdControlListFrame:ClearAllPoints()
+                crowdControlListFrame:SetPoint("LEFT", container, "RIGHT", 5, 0)
+            end
+            if lossOfControlFrame then
+                lossOfControlFrame:ClearAllPoints()
+                lossOfControlFrame:SetPoint("LEFT", container, "RIGHT", 5, 0)
+            end
+        end)
     end
 end
 
