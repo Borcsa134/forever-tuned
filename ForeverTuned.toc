@@ -13,5 +13,6 @@ modules/targetframe.lua
 modules/nameplates.lua
 modules/characterframe.lua
 modules/professionsframe.lua
+modules/legacyframe.lua
 modules/tooltip.lua
 modules/actionbar.lua

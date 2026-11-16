@@ -23,6 +23,9 @@ function Config:SetDefaults()
     if ForeverTunedDB.settings.professionsTabsAtBottom == nil then
         ForeverTunedDB.settings.professionsTabsAtBottom = true
     end
+    if ForeverTunedDB.settings.legacyTabsAtBottom == nil then
+        ForeverTunedDB.settings.legacyTabsAtBottom = true
+    end
     if ForeverTunedDB.settings.disableAutoGearCompare == nil then
         ForeverTunedDB.settings.disableAutoGearCompare = true
     end
@@ -58,6 +61,9 @@ local GROUPS = {
     }},
     { header = "Professions", items = {
         { key = "professionsTabsAtBottom", label = "Move tabs to the bottom" },
+    }},
+    { header = "Legacy System", items = {
+        { key = "legacyTabsAtBottom", label = "Move tabs to the bottom" },
     }},
     { header = "Tooltips", items = {
         { key = "disableAutoGearCompare", label = "Do not auto compare gear upgrades", live = true },
